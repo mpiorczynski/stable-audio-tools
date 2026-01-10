@@ -1,3 +1,4 @@
+import os
 from functools import reduce
 
 from einops import rearrange
@@ -16,6 +17,11 @@ except ImportError as e:
     print('flash_attn not installed, disabling Flash Attention')
     flash_attn_kvpacked_func = None
     flash_attn_func = None
+
+
+if os.environ.get("FLASH_ATTN_DISABLE", "0") == "1":
+    flash_attn_func = None
+    print("Disabling Flash Attention because FLASH_ATTN_DISABLE is set to 1")
 
 from .utils import compile
 

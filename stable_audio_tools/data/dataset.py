@@ -951,7 +951,6 @@ def create_dataloader_from_config(
             force_channels=force_channels,
             random_subset_percentage=random_subset_percentage,
         )
-
         
         dataloader = torch.utils.data.DataLoader(
             train_set,
@@ -963,7 +962,10 @@ def create_dataloader_from_config(
             drop_last=dataset_config.get("drop_last", True),
             collate_fn=collation_fn,
         )
-        return dataloader, len(train_set) if return_dataset_size else dataloader
+        if return_dataset_size:
+            return dataloader, len(train_set)
+        else:
+            return dataloader
 
     elif dataset_type == "pre_encoded":
         pre_encoded_dir_configs = dataset_config.get("datasets", None)
@@ -1028,7 +1030,10 @@ def create_dataloader_from_config(
             drop_last=dataset_config.get("drop_last", True),
             collate_fn=collation_fn,
         )
-        return dataloader, len(train_set) if return_dataset_size else dataloader
+        if return_dataset_size:
+            return dataloader, len(train_set)
+        else:
+            return dataloader
 
     elif dataset_type in ["s3", "wds"]:  # Support "s3" type for backwards compatibility
         wds_configs = []
@@ -1086,4 +1091,7 @@ def create_dataloader_from_config(
             resampled_shards=dataset_config.get("resampled_shards", True),
         ).data_loader
 
-        return dataloader, None if return_dataset_size else dataloader
+        if return_dataset_size:
+            return dataloader, None
+        else:
+            return dataloader
